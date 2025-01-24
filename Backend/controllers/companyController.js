@@ -143,7 +143,7 @@ const sendReport = async (report) => {
 };
 
 // Cron job to run in every 2 days 30 11 */2 * *
-cron.schedule('* * * * *', async () => {
+cron.schedule('30 11 */2 * *', async () => {
     console.log('Running email scheduler...');
 
     try {
