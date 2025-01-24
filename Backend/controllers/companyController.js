@@ -221,7 +221,7 @@ const updateActiveStatus = async (req, res) => {
 const updateEmployeeDetails = async (req, res) => {
     try {
         const { id } = req.params;
-        const { company_name, company_email, active } = req.body;
+        const { company_name, company_email } = req.body;
 
         // Validate the input
         if (!company_name || !company_email) {
@@ -231,7 +231,7 @@ const updateEmployeeDetails = async (req, res) => {
         // Find the employee by ID and update details
         const updatedEmployee = await SignUp.findByIdAndUpdate(
             id,
-            { company_name, company_email},
+            { company_name, company_email },
             { new: true, runValidators: true } // Return the updated document
         );
 
