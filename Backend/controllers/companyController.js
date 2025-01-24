@@ -25,6 +25,19 @@ const getAll = async (req, res) => {
     }
 };
 
+const getById = async (req, res) => {
+    try {
+        const employee = await SignUp.findById(req.params.id);
+        if (!employee) {
+            return res.status(404).json({ message: 'Employee not found' });
+        }
+        res.status(200).json({ employee });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
 // Create a new employee
 const createemployee = async (req, res) => {
     try {
@@ -204,5 +217,36 @@ const updateActiveStatus = async (req, res) => {
     }
 };
 
+// Update employee details
+const updateEmployeeDetails = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { company_name, company_email, active } = req.body;
 
-module.exports = { getAll, createemployee, updateActiveStatus }
+        // Validate the input
+        if (!company_name || !company_email) {
+            return res.status(400).json({ message: 'Company name and email are required' });
+        }
+
+        // Find the employee by ID and update details
+        const updatedEmployee = await SignUp.findByIdAndUpdate(
+            id,
+            { company_name, company_email},
+            { new: true, runValidators: true } // Return the updated document
+        );
+
+        if (!updatedEmployee) {
+            return res.status(404).json({ message: 'Employee not found' });
+        }
+
+        res.status(200).json({
+            message: 'Employee details updated successfully',
+            updatedEmployee,
+        });
+    } catch (error) {
+        console.error('Error updating employee details:', error.message);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+module.exports = { getAll, getById, createemployee, updateActiveStatus, updateEmployeeDetails }

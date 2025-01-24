@@ -8,9 +8,9 @@ const Employeeservice = {
     getemployee: async () => {
         try {
             const response = await axios.get(`${baseUrl}/com/get`);
-           
-                // console.log('Getting Employee');
-                return response;
+
+            // console.log('Getting Employee');
+            return response;
         } catch (error) {
             console.log(error.response.data.error);
             if (error.response && error.response.data) {
@@ -21,15 +21,19 @@ const Employeeservice = {
         }
     },
 
-    createemployee: async (data) => {        
+    getemployeeById: async (empid) => {
+        try {
+            const response = await axios.get(`${baseUrl}/com/get/${empid}`);
+
+            return response.data;
+        } catch (error) {
+            console.log(error);
+        }
+    },
+
+    createemployee: async (data) => {
         try {
             const response = await axios.post(`${baseUrl}/com/createemployee`, data);
-            if (response.data.status !== 409) {
-                console.log('Created');
-            }
-            // console.log(response.data)
-
-            // return response.data.employee._id;
             return response.data;
         } catch (error) {
             if (error.response && error.response.data) {
@@ -51,6 +55,18 @@ const Employeeservice = {
             throw new Error("Error updating employee status");
         }
     },
-    
+    updateemployee: async (data, empId) => {
+        try {
+            const response = await axios.put(`${baseUrl}/com/update/${empId}`, data);
+            console.log('Employee updated');
+            return response.data;
+        } catch (error) {
+            if (error.response && error.response.data) {
+                throw new Error(error.response.data.error);
+            } else {
+                throw new Error("Something went wrong");
+            }
+        }
+    },
 }
 export default Employeeservice;

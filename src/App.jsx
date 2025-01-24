@@ -1,10 +1,14 @@
 import React from 'react'
+import { BrowserRouter } from 'react-router';
+
 import AddCompany from './Components/AddCompany/AddCompany'
 
 const App = () => {
   return (
     <div>
-      <AddCompany/>
+      <BrowserRouter>
+        <AddCompany />
+      </BrowserRouter>
     </div>
   )
 }
