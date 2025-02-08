@@ -12,14 +12,14 @@ const AddCompany = () => {
     const [editemail, setEditEmail] = useState('');
     const [companies, setCompanies] = useState([]);
     const [editState, setEditState] = useState(false);
-    const [searchEmail, setSearchEmail] = useState(''); 
+    const [searchEmail, setSearchEmail] = useState('');
 
     const loc = useLocation();
     const id = loc.pathname.split("/")[1];
 
     // Fetch company data when edit mode is active
     useEffect(() => {
-        if (editState && id)  {
+        if (editState && id) {
             fetchData();
         }
     }, [editState, id]);
@@ -53,9 +53,9 @@ const AddCompany = () => {
         try {
             await empservice.createemployee(payload);
             fetchCompanies();
-            toast.success("Company added successfully!"); // Success toast
+            toast.success("Company added successfully!");
         } catch (error) {
-            toast.error("Failed to add company!"); // Error toast
+            toast.error("Failed to add company!");
             console.error(error);
         }
     };
@@ -63,10 +63,10 @@ const AddCompany = () => {
     const toggleActiveStatus = async (id) => {
         try {
             await empservice.updateEmployeeStatus(id);
-            fetchCompanies(); // Refresh the list
-            toast.success("Company status updated successfully!"); // Success toast
+            fetchCompanies();
+            toast.success("Company status updated successfully!");
         } catch (error) {
-            toast.error("Failed to update company status!"); // Error toast
+            toast.error("Failed to update company status!");
             console.error(error);
         }
     };
@@ -80,16 +80,28 @@ const AddCompany = () => {
         try {
             await empservice.updateemployee(payload, id);
             setEditState(false);
-            fetchCompanies(); // Refresh the list after update
-            toast.success("Company updated successfully!"); // Success toast
+            fetchCompanies();
+            toast.success("Company updated successfully!");
         } catch (error) {
-            toast.error("Failed to update company!"); // Error toast
+            toast.error("Failed to update company!");
             console.error(error);
         }
     };
 
     const handleSearchChange = (event) => {
-        setSearchEmail(event.target.value);  // Update search email on change
+        setSearchEmail(event.target.value);
+    };
+
+    // New function: Trigger email sending via the API
+    const handleSendEmails = async () => {
+        try {
+            const result = await empservice.sendEmails();
+            toast.success("Emails processed successfully!");
+            console.log(result);
+        } catch (error) {
+            toast.error("Failed to send emails!");
+            console.error(error);
+        }
     };
 
     // Filter the companies list based on the search email
@@ -119,6 +131,20 @@ const AddCompany = () => {
                     <button onClick={handleSubmit}>Add Company</button>
                 </div>
             )}
+
+            {/* New button to trigger email sending */}
+            <div style={{ marginTop: '20px' }}>
+                <button onClick={handleSendEmails} style={{
+                    backgroundColor: '#007bff',
+                    color: '#fff',
+                    border: 'none',
+                    padding: '10px 20px',
+                    cursor: 'pointer',
+                    borderRadius: '5px'
+                }}>
+                    Send Emails
+                </button>
+            </div>
 
             <div id="company-list">
                 <h2>Company List</h2>
@@ -158,7 +184,7 @@ const AddCompany = () => {
                         >
                             {company.active ? 'Disable' : 'Enable'}
                         </button>
-                        <Link to={`${company._id}`} >
+                        <Link to={`${company._id}`}>
                             <button
                                 onClick={handleEdit}
                                 style={{
@@ -177,7 +203,9 @@ const AddCompany = () => {
                 ))}
             </div>
 
-            <ToastContainer /> {/* Toast Container */}
+
+
+            <ToastContainer />
         </div>
     );
 };

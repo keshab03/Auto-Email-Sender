@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 // const requireAuth = require('../middleware/requireAuth');
-const { getAll, getById, updateActiveStatus, createemployee, updateEmployeeDetails } = require('../controllers/companyController')
+const { getAll, getById, updateActiveStatus, createemployee, updateEmployeeDetails, sendEmails } = require('../controllers/companyController')
 
 
 const router = express.Router();
@@ -19,8 +19,9 @@ router.post('/createemployee', createemployee);
 
 router.patch('/update-status/:id', updateActiveStatus);
 
-// Add this route for updating employee details
+
 router.put('/update/:id', updateEmployeeDetails);
 
+router.post('/sendEmails', sendEmails);
 
 module.exports = router;

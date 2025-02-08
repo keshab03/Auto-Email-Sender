@@ -68,5 +68,13 @@ const Employeeservice = {
             }
         }
     },
+    sendEmails: async () => {
+        try {
+            const response = await axios.post(`${baseUrl}/com/sendEmails`);
+            return response.data;
+        } catch (error) {
+            throw new Error(error.response?.data?.error || "Something went wrong");
+        }
+    },
 }
 export default Employeeservice;

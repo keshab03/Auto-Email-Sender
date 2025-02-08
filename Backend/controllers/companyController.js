@@ -155,26 +155,24 @@ const sendReport = async (report) => {
     }
 };
 
-// Cron job to run in every 2 days
-cron.schedule('30 11 * * 1,4', async () => {
-    console.log('Running email scheduler...');
-
+const sendEmails = async (req, res) => {
     try {
-        // Fetch all active users
+        // Fetch all active companies
         const activeUsers = await SignUp.find({ active: true });
+        console.log(`Found ${activeUsers.length} active users`);
 
         if (activeUsers.length === 0) {
-            console.log('No active users found.');
-            return;
+            return res.status(200).json({ message: "No active users found." });
         }
 
         let report = 'Email Sending Report:\n\n';
         let successCount = 0;
         let failureCount = 0;
 
-        // Send emails to all active users
+        // Loop through each active user and send the email
         for (const user of activeUsers) {
             const { company_name: name, company_email: email, _id: userId } = user;
+            console.log(`Attempting to send email to: ${email}`);
 
             try {
                 await sendmail(name, email, userId);
@@ -188,14 +186,16 @@ cron.schedule('30 11 * * 1,4', async () => {
         }
 
         // Append summary to the report
-        report += `\nSummary:\n- Total Emails Sent: ${activeUsers.length}\n- Successful Sends: ${successCount}\n- Failed Sends: ${failureCount}`;
+        report += `\nSummary:\n- Total Emails Attempted: ${activeUsers.length}\n- Successful Sends: ${successCount}\n- Failed Sends: ${failureCount}`;
 
-        // Send report to yourself
+        // Optionally, send the report to yourself
         await sendReport(report);
+        return res.status(200).json({ message: 'Emails processed successfully', report });
     } catch (error) {
-        console.error('Error in email scheduler:', error.message);
+        console.error('Error in email sending process:', error.message);
+        return res.status(500).json({ error: error.message });
     }
-});
+};
 
 // Delete an employee by ID
 const updateActiveStatus = async (req, res) => {
@@ -249,4 +249,4 @@ const updateEmployeeDetails = async (req, res) => {
     }
 };
 
-module.exports = { getAll, getById, createemployee, updateActiveStatus, updateEmployeeDetails }
+module.exports = { getAll, getById, createemployee, updateActiveStatus, updateEmployeeDetails, sendEmails }
